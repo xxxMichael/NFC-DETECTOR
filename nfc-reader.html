@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lector NFC</title>
+    <link rel="stylesheet" href="estilos.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="contenedor-General">
+        <nav class="barra-Navegacion">
+            <div class="logo">
+                <img class="img-Logo" src="https://redi.cedia.edu.ec/members/UTA.png">
+            </div>
+            <ul class="navegacion-Items">
+                <li><a href="nfc-reader.html">INGRESO</a></li>
+                <li class="btn"><a href="listado.html">LISTADO</a></li>
+            </ul>
+        </nav>
+
+        <div class="modal-overlay"></div> <!-- Fondo detrás de la modal -->
+        <div class="modal" id="result">
+            <h1 id="mensajeBienvenida"></h1>
+            <img id="img-Bienvenida" src="https://i.pinimg.com/control/564x/fa/2a/9f/fa2a9fc40d0c4137def5d4a3b1ca42b9.jpg">
+        </div>
+        <div class="lector-NFC">
+
+            <button id="readNfc">Activar
+                NFC</button>
+            <div id="result"></div>
+        </div>
+        <div>
+            <div class="loader">
+                <div>
+                    <ul>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                        <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                                <path
+                                    d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z">
+                                </path>
+                            </svg>
+                        </li>
+                    </ul>
+                </div>
+                <h2 style="font-size: 24px; text-align: center; margin: 20px 0;">Acerca tu pulsera para registrar tu
+                    asistencia</h2>
+
+            </div>
+        </div>
+        <div class="mensaje-saludo" id="mensajeSaludo"></div>
+
+    </div>
+    <script>
+        function mostrarModal(mensaje) {
+            const modal = document.getElementById('result');
+            const overlay = document.querySelector('.modal-overlay');
+            const mensajeBienvenida = document.getElementById('mensajeBienvenida');
+            const imagen = document.getElementById('img-Bienvenida');
+
+            // Actualiza el texto del h1 con el mensaje recibido como parámetro
+            mensajeBienvenida.textContent = mensaje;
+
+            // Actualiza la imagen para evitar el almacenamiento en caché
+            imagen.src = imagen.src + '?' + new Date().getTime();
+
+            // Muestra la modal y el overlay
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+
+            // Cierra la modal automáticamente después de 5 segundos
+            setTimeout(() => {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+                document.querySelector('.loader').style.display = 'block'; // Mostrar loader de nuevo
+
+            }, 3000);
+        }
+
+        // Conexión con el servidor WebSocket usando Socket.IO
+        const socket = io('https://e571-45-189-56-192.ngrok-free.app'); // URL del servidor con WebSocket
+
+        // Evento que escucha el mensaje de bienvenida emitido desde el servidor
+        socket.on('nfc_response', (data) => {
+            mostrarModal(data.mensaje); // Muestra el modal cuando el servidor envía el mensaje de bienvenida
+        });
+    </script>
+
+    <script>
+
+        document.getElementById('readNfc').addEventListener('click', async () => {
+            if ('NDEFReader' in window) {
+                try {
+                    const reader = new NDEFReader();
+                    await reader.scan();
+                    document.getElementById('readNfc').style.display = 'none'; // Ocultar el botón tras activación
+                    document.querySelector('.loader').style.display = 'block'; // Mostrar loader
+
+                    reader.onreading = (event) => {
+                        const decoder = new TextDecoder();
+                        let nfcData = "";
+                        for (const record of event.message.records) {
+                            nfcData += decoder.decode(record.data);
+                        }
+
+                        // Enviar los datos leídos al servidor Flask usando la URL de ngrok
+                        fetch('https://e571-45-189-56-192.ngrok-free.app/receive-nfc', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `nfcData=${encodeURIComponent(nfcData)}`
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                document.querySelector('.loader').style.display = 'none'; // Ocultar loader antes de mostrar el modal
+                                mostrarModal(data.mensaje); // Mostrar modal en el dispositivo móvil
+                                console.log('Respuesta del servidor:', data);
+                            })
+                            .catch(error => console.error('Error al enviar los datos:', error));
+                    };
+                } catch (error) {
+                    console.error('Error leyendo NFC:', error);
+                    alert('Ocurrió un error al intentar leer el NFC. Asegúrate de que el NFC esté habilitado y que el navegador sea compatible.');
+                }
+            } else {
+                alert('Web NFC no es soportado en este navegador.');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

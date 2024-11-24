@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listado</title>
+    <link rel="stylesheet" href="estilos.css" />
+</head>
+
+<body>
+    <div class="contenedor-General">
+        <nav class="barra-Navegacion">
+            <div class="logo">
+                <img class="img-Logo" src="https://redi.cedia.edu.ec/members/UTA.png">
+            </div>
+            <ul class="navegacion-Items">
+                <li><a href="nfc-reader.html">INGRESO</a></li>
+                <li class="btn"><a href="listado.html">LISTADO</a></li>
+            </ul>
+        </nav>
+        <div class="contenedor-Listado">
+            <h1>Listado de Ingresos y Salidas</h1>
+            <div class="table-wrapper">
+                <table id="tabla-ingresos">
+                    <thead>
+                        <tr>
+                            <th>Cédula</th>
+                            <th>Fecha</th>
+                            <th>hora</th>
+                            <th>Tipo de Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para cargar los datos del listado y agregarlos a la tabla
+        async function cargarListado() {
+            try {
+                const response = await fetch('https://e571-45-189-56-192.ngrok-free.app/listado', {
+                    mode: 'no-cors'
+                })
+                const registros = await response.json();
+
+                const tablaBody = document.getElementById('tabla-body');
+                tablaBody.innerHTML = ''; // Limpiar cualquier contenido previo
+
+                registros.forEach(registro => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${registro.cedula}</td>
+                        <td>${registro.fecha}</td>
+                        <td>${registro.hora}</td>
+                        <td>${registro.tipo_registro}</td>
+                    `;
+                    tablaBody.appendChild(fila);
+                });
+            } catch (error) {
+                console.error('Error al cargar el listado:', error);
+            }
+        }
+
+        // Cargar los datos al cargar la página
+        window.onload = cargarListado;
+    </script>
+</body>
+
+</html>
